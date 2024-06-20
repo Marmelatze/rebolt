@@ -1,0 +1,9 @@
+# Stub of Puppetfile from bolt gem, used for deleting modules w/ rake
+
+forge "https://forgeapi.puppetlabs.com"
+
+# If we don't list these modules explicitly, r10k will purge them
+mod 'canary', local: true
+mod 'aggregate', local: true
+mod 'puppetdb_fact', local: true
+mod 'puppet_connect', local: true
