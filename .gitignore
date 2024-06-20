@@ -1,3 +1,6 @@
 Gemfile.lock
 /modules
 /vendor
+!/bin
+/bin/*
+!/bin/bolt

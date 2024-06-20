@@ -14,6 +14,9 @@ desc "Run tasks needed to prepare Bolt"
 task setup: %w[setup:binstubs setup:modules setup:info setup:check_path]
 
 namespace :setup do
+  desc "Run tasks needed to prepare Bolt and r10k"
+  task all: %w[setup setup:link_r10k]
+
   desc "Install binstubs"
   task :binstubs do
     system("bundle binstubs --path=./vendor/bin --all")
@@ -63,6 +66,13 @@ namespace :setup do
     end
   end
 
+  desc "[optional] Add r10k to ./bin"
+  task :link_r10k do
+    Dir.chdir("./bin") do
+      ln_s("../vendor/bin/r10k","r10k") unless File.exist?("r10k")
+    end
+  end
+
   desc "Print path to vendored Puppet modules"
   task :info do
     puts
@@ -78,7 +88,7 @@ task clean: %w[clean:modules]
 
 namespace :clean do
   desc "Run (nearly) all clean tasks"
-  task all: %w[clean:binstubs clean:modules]
+  task all: %w[clean:binstubs clean:modules clean:unlink_r10k]
 
   desc "Remove Bundler binstubs"
   task :binstubs do
@@ -101,5 +111,10 @@ namespace :clean do
     dotfile = Pathname("~/.puppetlabs/etc/bolt/.first_runs_free").expand_path
 
     rm(dotfile) if dotfile.exist?
+  end
+
+  desc "Remove r10k link in ./bin"
+  task :unlink_r10k do
+    rm("./bin/r10k") if File.symlink?("./bin/r10k")
   end
 end
