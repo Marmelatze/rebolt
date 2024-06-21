@@ -34,8 +34,7 @@ help demystify things, even if you still stick to the official binaries for prod
 * `rake`
 
 ## Updating
-* This repo: `git pull` (I'll consider adding tagged releases and packages if this gets popular,
-  but for now it's just getting started)
+* This repo: `git pull`
 * Puppet Bolt gem and its gem dependencies: `bundle update --all`
 * Puppet Forge modules: `rake`
 
