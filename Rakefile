@@ -30,7 +30,7 @@ task setup: %w[setup:binstubs setup:modules setup:check_path]
 
 namespace :setup do
   desc "Run tasks required to prepare Bolt, and all optional setup tasks"
-  task all: %w[setup setup:link_r10k setup:link_modules]
+  task all: %w[setup setup:link_modules]
 
   desc "Install binstubs"
   task :binstubs do
@@ -81,13 +81,6 @@ namespace :setup do
     end
   end
 
-  desc "[optional] Add r10k to ./bin"
-  task :link_r10k do
-    Dir.chdir("./bin") do
-      ln_s_overwrite("../vendor/bin/r10k","r10k")
-    end
-  end
-
   desc "[optional] write symlink for easy access to vendored modules"
   task :link_modules do
     modules_path = (bolt_home/"modules").relative_path_from(Pathname.pwd).to_s
@@ -102,7 +95,7 @@ task clean: %w[clean:modules]
 
 namespace :clean do
   desc "Run (nearly) all clean tasks"
-  task all: %w[clean:binstubs clean:modules clean:unlink_r10k clean:unlink_modules]
+  task all: %w[clean:binstubs clean:modules clean:unlink_modules]
 
   desc "Remove Bundler binstubs"
   task :binstubs do
@@ -125,11 +118,6 @@ namespace :clean do
     dotfile = Pathname("~/.puppetlabs/etc/bolt/.first_runs_free").expand_path
 
     rm(dotfile) if dotfile.exist?
-  end
-
-  desc "Remove r10k link in ./bin"
-  task :unlink_r10k do
-    rm_link("./bin/r10k")
   end
 
   desc "Remove modules link"
