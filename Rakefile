@@ -1,5 +1,6 @@
 require 'pathname'
 
+# path helpers
 def bolt_home
   Pathname(Bundler.definition.specs.find{|x| x.name == "bolt"}.full_gem_path)
 end
@@ -8,14 +9,28 @@ def rebolt_home
   Pathname(__FILE__).dirname
 end
 
+# filesystem action helpers
+def rm_link(path)
+  rm(path) if File.symlink?(path)
+  raise "I won't remove \"#{path}\", it's not a symlink!" if File.exist?(path)
+end
+
+def ln_s_overwrite(path, target)
+  if File.symlink?(target) && File.readlink(target) != path
+    rm(target)
+  end
+
+  ln_s(path, target) unless File.symlink?(target)
+end
+
 task default: %w[setup]
 
-desc "Run tasks needed to prepare Bolt"
-task setup: %w[setup:binstubs setup:modules setup:info setup:check_path]
+desc "Run tasks required to prepare Bolt"
+task setup: %w[setup:binstubs setup:modules setup:check_path]
 
 namespace :setup do
-  desc "Run tasks needed to prepare Bolt and r10k"
-  task all: %w[setup setup:link_r10k]
+  desc "Run tasks required to prepare Bolt, and all optional setup tasks"
+  task all: %w[setup setup:link_r10k setup:link_modules]
 
   desc "Install binstubs"
   task :binstubs do
@@ -69,16 +84,15 @@ namespace :setup do
   desc "[optional] Add r10k to ./bin"
   task :link_r10k do
     Dir.chdir("./bin") do
-      ln_s("../vendor/bin/r10k","r10k") unless File.exist?("r10k")
+      ln_s_overwrite("../vendor/bin/r10k","r10k")
     end
   end
 
-  desc "Print path to vendored Puppet modules"
-  task :info do
-    puts
-    puts "Modules installed from Puppet Forge can be found at:"
-    puts
-    puts "  #{bolt_home/"modules"}"
+  desc "[optional] write symlink for easy access to vendored modules"
+  task :link_modules do
+    modules_path = (bolt_home/"modules").relative_path_from(Pathname.pwd).to_s
+
+    ln_s_overwrite(modules_path,"modules")
   end
 end
 
@@ -88,7 +102,7 @@ task clean: %w[clean:modules]
 
 namespace :clean do
   desc "Run (nearly) all clean tasks"
-  task all: %w[clean:binstubs clean:modules clean:unlink_r10k]
+  task all: %w[clean:binstubs clean:modules clean:unlink_r10k clean:unlink_modules]
 
   desc "Remove Bundler binstubs"
   task :binstubs do
@@ -115,6 +129,11 @@ namespace :clean do
 
   desc "Remove r10k link in ./bin"
   task :unlink_r10k do
-    rm("./bin/r10k") if File.symlink?("./bin/r10k")
+    rm_link("./bin/r10k")
+  end
+
+  desc "Remove modules link"
+  task :unlink_modules do
+    rm_link("modules")
   end
 end
