@@ -25,13 +25,10 @@ end
 
 task default: %w[setup]
 
-desc "Run tasks required to prepare Bolt"
-task setup: %w[setup:binstubs setup:modules setup:check_path]
+desc "Prepare Bolt by running all setup tasks"
+task setup: %w[setup:binstubs setup:modules setup:link_modules setup:check_path]
 
 namespace :setup do
-  desc "Run tasks required to prepare Bolt, and all optional setup tasks"
-  task all: %w[setup setup:link_modules]
-
   desc "Install binstubs"
   task :binstubs do
     system("bundle binstubs --path=./vendor/bin --all")

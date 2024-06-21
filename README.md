@@ -50,7 +50,7 @@ dependencies, uninstall the 'bolt' gem and install Bolt as a package:
 https://puppet.com/docs/bolt/latest/bolt_installing.html
 ```
 
-Try running `rake setup:modules` or, maximally, `rake clean; rake setup`.
+Try running `rake setup:modules` or, maximally, `rake clean:all; rake`.
 
 You don't have to take my word that running Bolt this way is safe. Take a look at the [code that
 prints this warning](https://github.com/puppetlabs/bolt/blob/42ec31cc298b981f1e853820caf701e8a5573a8e/lib/bolt/cli.rb#L774-L810).
