@@ -2,6 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rake'
 
-gem 'bolt', '~> 3.30'
-gem 'puppet', '~> 7.31'
+gem 'bolt', git: 'https://github.com/OpenVoxProject/bolt/'
+gem 'openvox', git: 'https://github.com/OpenVoxProject/puppet'
 gem 'r10k'
