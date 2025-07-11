@@ -1,11 +1,1 @@
-#!/bin/bash
-#unset RUBYLIB
-unset GEM_HOME
-unset BUNDLER_VERSION
-unset GEM_PATH
-if [ -n "$RBENV_ORIG_PATH" ]; then
-    export PATH="$RBENV_ORIG_PATH"
-fi
-
-env
-exec ruby ##REBOT##/vendor/bin/bolt $@
+../vendor/bin/bolt
