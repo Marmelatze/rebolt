@@ -2,7 +2,7 @@ require 'pathname'
 
 # path helpers
 def bolt_home
-  Pathname(Bundler.definition.specs.find{|x| x.name == "bolt"}.full_gem_path)
+  Pathname(Bundler.definition.specs.find{|x| x.name == "openbolt"}.full_gem_path)
 end
 
 def rebolt_home
